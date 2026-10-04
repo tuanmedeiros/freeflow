@@ -32,3 +32,11 @@ adb install -r build/android/FreeFlow-Android-debug.apk
 Open FreeFlow, enter an API key for Groq or another OpenAI-compatible provider,
 and tap **Start dictation**. The default base URL and Whisper model target
 Groq; both can be changed in the app.
+
+Before distributing a build, run this device smoke test: install the APK,
+grant microphone permission, dictate a synthetic phrase such as “FreeFlow test
+one two three”, confirm that a transcript appears, tap **Copy**, and paste it
+into a local note. Repeat once with cleanup disabled to verify the raw
+transcription path. This repository was built and signature-checked here, but
+that device/provider test remains pending until an Android device and a test
+provider key are available.
