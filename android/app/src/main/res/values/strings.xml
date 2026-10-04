@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">FreeFlow</string>
+    <string name="app_description">Private voice dictation with configurable OpenAI compatible providers</string>
+</resources>

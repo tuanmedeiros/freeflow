@@ -33,6 +33,25 @@ FreeFlow is a free Mac dictation app inspired by [Wispr Flow](https://wisprflow.
 2. Get a free Groq API key from [groq.com](https://groq.com/)
 3. Hold `Fn` to talk, or tap `Command-Fn` to start and stop dictation, and have whatever you say pasted into the current text field
 
+## Android APK
+
+The repository also contains a native Android client in [`android/`](android/).
+It records microphone audio, transcribes it through the configured
+OpenAI-compatible provider, optionally cleans the transcript, and lets you copy
+or share the result. Android does not expose the Mac app's global shortcut or
+cross-app paste APIs, so recording starts from the app screen.
+
+With JDK 17 and the Android SDK platform `android-35` plus build-tools
+`35.0.0` installed, build an installable debug APK with:
+
+```bash
+export JAVA_HOME=/path/to/jdk-17
+export ANDROID_SDK_ROOT=$HOME/Library/Android/sdk
+./android/build-apk.sh
+```
+
+The APK is written to `build/android/FreeFlow-Android-debug.apk`.
+
 ## Features
 
 - **Custom shortcuts:** Customize both hold-to-talk and toggle dictation shortcuts. If your toggle shortcut extends your hold shortcut, you can start in hold mode and press the extra modifier keys to latch into tap mode without stopping the recording.
