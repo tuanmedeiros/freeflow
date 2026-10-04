@@ -38,7 +38,9 @@ grant microphone permission, dictate a synthetic phrase such as “FreeFlow test
 one two three”, confirm that a transcript appears, tap **Copy**, and paste it
 into a local note. Repeat once with cleanup disabled to verify the raw
 transcription path. This repository was built and signature-checked here, but
-the successful-provider and copy/paste portions remain pending until an Android
+the physical-device and real-provider portions remain pending until an Android
 device with a test provider key is available. The local API 35 emulator smoke
 test already covers installation, launch, microphone permission, recording
-start/stop, encrypted settings persistence, and a safe failed-provider path.
+start/stop, encrypted settings persistence, the safe failed-provider path, and
+successful transcription plus cleanup responses from a synthetic HTTPS
+OpenAI-compatible provider.
