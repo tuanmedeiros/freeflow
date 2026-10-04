@@ -170,6 +170,9 @@ final class WavRecorder {
         } catch (IOException exception) {
             captureError = exception;
             recording = false;
+        } catch (RuntimeException exception) {
+            captureError = new IOException("The microphone stopped while recording", exception);
+            recording = false;
         }
     }
 

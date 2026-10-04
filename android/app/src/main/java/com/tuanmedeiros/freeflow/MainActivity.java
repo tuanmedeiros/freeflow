@@ -213,7 +213,12 @@ public final class MainActivity extends Activity {
             apiKeyField.requestFocus();
             return;
         }
-        saveSettings();
+        try {
+            saveSettings();
+        } catch (IllegalStateException exception) {
+            showStatus("Could not protect the API key on this device.");
+            return;
+        }
         if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO);
             return;
