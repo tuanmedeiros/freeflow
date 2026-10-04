@@ -85,20 +85,25 @@ final class WavRecorder {
         return outputFile;
     }
 
-    synchronized File stop() throws IOException {
-        if (!recording && captureThread == null) {
-            throw new IOException("No recording is active");
+    File stop() throws IOException {
+        final Thread thread;
+        final AudioRecord activeAudioRecord;
+        synchronized (this) {
+            if (!recording && captureThread == null) {
+                throw new IOException("No recording is active");
+            }
+            recording = false;
+            thread = captureThread;
+            activeAudioRecord = audioRecord;
         }
-        recording = false;
-        if (audioRecord != null) {
+
+        if (activeAudioRecord != null) {
             try {
-                audioRecord.stop();
+                activeAudioRecord.stop();
             } catch (IllegalStateException ignored) {
                 // The capture thread still gets joined and the partial file is usable.
             }
         }
-
-        Thread thread = captureThread;
         if (thread != null) {
             try {
                 thread.join(2_000);
@@ -106,37 +111,41 @@ final class WavRecorder {
                 Thread.currentThread().interrupt();
             }
         }
-        captureThread = null;
-        if (audioRecord != null) {
-            audioRecord.release();
-            audioRecord = null;
-        }
-        if (output != null) {
-            output.flush();
-            output.close();
-            output = null;
+
+        final File completedFile;
+        final long completedDataBytes;
+        final IOException completedCaptureError;
+        synchronized (this) {
+            captureThread = null;
+            if (audioRecord != null) {
+                audioRecord.release();
+                audioRecord = null;
+            }
+            if (output != null) {
+                output.flush();
+                output.close();
+                output = null;
+            }
+            completedFile = outputFile;
+            completedDataBytes = dataBytes;
+            completedCaptureError = captureError;
+            outputFile = null;
         }
 
-        if (captureError != null) {
-            File failedFile = outputFile;
-            outputFile = null;
-            if (failedFile != null) {
-                failedFile.delete();
+        if (completedCaptureError != null) {
+            if (completedFile != null) {
+                completedFile.delete();
             }
-            throw captureError;
+            throw completedCaptureError;
         }
-        if (outputFile == null || dataBytes == 0) {
-            File emptyFile = outputFile;
-            outputFile = null;
-            if (emptyFile != null) {
-                emptyFile.delete();
+        if (completedFile == null || completedDataBytes == 0) {
+            if (completedFile != null) {
+                completedFile.delete();
             }
             throw new IOException("No audio was captured");
         }
 
-        File completedFile = outputFile;
-        patchHeader(completedFile, dataBytes);
-        outputFile = null;
+        patchHeader(completedFile, completedDataBytes);
         return completedFile;
     }
 
