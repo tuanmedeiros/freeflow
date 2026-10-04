@@ -115,7 +115,8 @@ final class ProviderClient {
             if (choices == null || choices.length() == 0) {
                 throw new IOException("The cleanup provider returned no choices");
             }
-            JSONObject message = choices.optJSONObject(0);
+            JSONObject choice = choices.optJSONObject(0);
+            JSONObject message = choice == null ? null : choice.optJSONObject("message");
             String text = message == null ? "" : message.optString("content", "").trim();
             if (text.isEmpty()) {
                 throw new IOException("The cleanup provider returned no text");
